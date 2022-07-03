@@ -1,0 +1,5 @@
+# Ignora los archivos relacionados a Ambiente Virtual
+*env
+
+# Ignora archivos de configuración SASS
+.sass-cache
