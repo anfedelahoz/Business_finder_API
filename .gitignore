@@ -1,5 +1,19 @@
-# Ignora los archivos relacionados a Ambiente Virtual
-*env
-
-# Ignora archivos de configuración SASS
-.sass-cache
+output/
+venv/
+env/
+temp/
+.rpa/
+.idea/
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+.virtual_documents/
+*/.virtual_documents/*
+.vscode
+.DS_Store
+*.pyc
+*.zip
+*/work-items-out/*
+testrun/*
+.~lock*
+*.pkl
+*.png
