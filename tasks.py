@@ -41,7 +41,7 @@ def look_for_companies(top_results, company_search):
                 if char not in company_search:
                     actual_score -= 1
             browser_lib.click_element(f'xpath://h3[contains(text(), "{row[0]}")]')
-            store_screenshot(f"output/{row[0]}.png")
+            store_screenshot(f"images/{row[0]}.png")
             companies_list.append(store_result(actual_score))
             browser_lib.go_back()
             actual_row += 1
@@ -67,7 +67,7 @@ def look_best_fit_company(top_searchs, company_name):
 
 
 def store_screenshot(filename):
-    browser_lib.screenshot(filename=filename)
+    browser_lib.screenshot('xpath://*[@id="imprimir"]/table', filename=filename.replace(" ", "_"))
 
 
 def store_result(score_similitud):
@@ -101,7 +101,8 @@ def store_result(score_similitud):
         "ultimo_balance_einforma": ultimo_balance_einforma,
         "fecha_ultimo_dato": fecha_ultimo_dato,
         "ultimo_balance_einforma": fecha_actualizacion_camara_comercio,
-        "score_similitud": score_similitud
+        "score_similitud": score_similitud,
+        "screenshot": f'localhost:5000/images/{razon_social.replace(" ", "_")}.png' 
     }
     return result_dict
 
@@ -113,7 +114,6 @@ def main():
         top_searchs = 3
         open_the_website("https://www.einforma.co/buscador-empresas-empresarios")
         search_for(company_name, location)
-        #look_for_companies(top_searchs, company_name)
         look_best_fit_company(top_searchs, company_name)
         
     finally:

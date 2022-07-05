@@ -1,0 +1,85 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "description": "Andres Felipe De la Hoz",
+      "version": "1.0.0",
+      "title": "API REST with Robot-framework for company consultation",
+      "license": {
+        "name": "Original repository",
+        "url": "https://github.com/anfedelahoz/Business_finder_API"
+      }
+    },
+
+    "tags": [
+      {
+        "name": "Company Request",
+        "description": "An API RESTful for requesting and return company requests"
+      }
+    ],
+    "paths": {
+      "/request": {
+        "get": {
+          "tags": [
+            "Companies Request"
+          ],
+          "summary": "Get all companies requested with given name, location and a limit of searches",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "company",
+              "required": true,
+              "description": "Company request name"
+            },
+            {
+            "in": "path",
+            "name": "department",
+            "required": true,
+            "description": "Company request location"
+            },
+            {
+            "in": "path",
+            "name": "top_searchs",
+            "required": true,
+            "description": "Company request limit of searches (1 to 30)"
+            }
+            
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/components/schemas/CompanyRequest"
+              }
+            },
+            "400": {
+              "description": "Failed. Misunderstood Request."
+            },
+            "404": {
+              "description": "Failed. Book request not found."
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "CompanyRequest": {
+            "type": "object",
+            "properties": {
+              "company_name": {
+                "type": "string",
+                "format": "string"
+              },
+              "location": {
+                "type": "string",
+                "format": "email"
+              },
+              "search_limit": {
+                "type": "number",
+                "format": "number"
+              }
+            }
+          }
+      }
+    }
+  }

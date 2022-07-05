@@ -1,8 +1,10 @@
+from distutils.command.config import config
 from tkinter.tix import Tree
 from attr import field
-from flask import Flask, jsonify, request, abort
-from flask_restful import Resource, Api
+import requests
+from flask import Flask, jsonify, request, abort, send_from_directory
 from marshmallow import Schema, fields
+from flask_swagger_ui import get_swaggerui_blueprint
 from tasks import open_the_website, search_for, look_best_fit_company, look_for_companies
 
 
@@ -12,22 +14,38 @@ class CompanyQuerySchema(Schema):
     top_searchs = fields.Integer(required=True)
 
 
-app = Flask(__name__)
 
+
+app = Flask(__name__, static_folder= 'images')
+# api = Api(app, version= '1.0.0', title='API REST with Robot-framework for company consultation',
+# description='Andres De la Hoz')
 
 schema = CompanyQuerySchema()
 
-# spec = APISpec(
-#     title= 'flask-api-swagger-doc',
-#     version= '1.0.0',
-#     openapi_version = '3.0.2'
-#     plugins = [FlaskPuging(), MarshallowPlugin()]
-# )
+
+@app.route('/static/<path:path>', methods=['GET'])
+def send_static(path):
+    return send_from_directory('static', path)
 
 
 
-@app.route('/search_all_companies', methods=['GET'])
-def get():
+SWAGGER_URL = '/swagger'
+API_URL = '/static/swagger.json'
+swaggerui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': 'API REST with Robot-framework for company consultation'
+    }
+)
+
+
+app.register_blueprint(swaggerui_blueprint)
+
+
+@app.route('/allCompanies', methods=['GET'], endpoint='/allCompanies')
+# @api.doc(params={'company': 'Olimpia', 'departmen': 'BOGOTÁ', 'top_searchs': 3})
+def get_all():
     errors = schema.validate(request.args)
     if not errors:
          abort(errors, 422)
@@ -41,8 +59,9 @@ def get():
     return jsonify(results)
 
 
-@app.route('/search_best_fit_company', methods=['GET'])
-def get():
+@app.route('/bestFit', methods=['GET'], endpoint='/bestFit')
+# @api.doc(params={'company': 'Olimpia', 'departmen': 'BOGOTÁ', 'top_searchs': 3})
+def get_best():
     errors = schema.validate(request.args)
     if not errors:
          abort(errors, 422)
