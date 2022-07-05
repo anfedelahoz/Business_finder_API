@@ -18,3 +18,4 @@ robotframework-pythonlibcore==3.0.0
 rpaframework==15.1.4
 rpaframework-core==9.0.1
 Werkzeug==2.1.2
+gunicorn==20.1.0
