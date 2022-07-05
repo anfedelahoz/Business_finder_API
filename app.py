@@ -22,6 +22,14 @@ app = Flask(__name__, static_folder= 'images')
 
 schema = CompanyQuerySchema()
 
+@app.route('/', methods=['GET'])
+def home(path):
+    return """<h1>Welcome to API for company consultation</h1>
+    <h6>Options for querying:</h6>
+    <h2>/allCompanies?company=BAIRES&department=BOGOTÁ&top_searchs=3</h2>
+    <h2>/bestFit?company=BAIRES&department=BOGOTÁ&top_searchs=3</h2>
+    """
+
 
 @app.route('/static/<path:path>', methods=['GET'])
 def send_static(path):
