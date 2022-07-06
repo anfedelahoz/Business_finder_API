@@ -15,7 +15,6 @@ class CompanyQuerySchema(Schema):
 
 
 
-
 app = Flask(__name__, static_folder= 'images')
 # api = Api(app, version= '1.0.0', title='API REST with Robot-framework for company consultation',
 # description='Andres De la Hoz')
@@ -23,11 +22,11 @@ app = Flask(__name__, static_folder= 'images')
 schema = CompanyQuerySchema()
 
 @app.route('/', methods=['GET'])
-def home(path):
+def home():
     return """<h1>Welcome to API for company consultation</h1>
-    <h6>Options for querying:</h6>
-    <h2>/allCompanies?company=BAIRES&department=BOGOTÁ&top_searchs=3</h2>
-    <h2>/bestFit?company=BAIRES&department=BOGOTÁ&top_searchs=3</h2>
+    <h3>Options for querying:</h6>
+    <p>/allCompanies?company=BAIRES&department=BOGOTÁ&top_searchs=3</p>
+    <p>/bestFit?company=BAIRES&department=BOGOTÁ&top_searchs=3</p>
     """
 
 
