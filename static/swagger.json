@@ -9,15 +9,20 @@
         "url": "https://github.com/anfedelahoz/Business_finder_API"
       }
     },
-
+  "host": "localhost:5000",
+  "basePath": "/allCompanies",
     "tags": [
       {
         "name": "Company Request",
-        "description": "An API RESTful for requesting and return company requests"
+        "description": "An API RESTful for requesting and return company requests",
+        "externalDocs": {
+          "description": "Find out more",
+          "url": "localhost:5000/allCompanies"
+        }
       }
     ],
     "paths": {
-      "/request": {
+      "/bestFit": {
         "get": {
           "tags": [
             "Companies Request"
@@ -25,22 +30,28 @@
           "summary": "Get all companies requested with given name, location and a limit of searches",
           "parameters": [
             {
-              "in": "path",
+    
               "name": "company",
               "required": true,
-              "description": "Company request name"
+              "description": "Company request name",
+              "type": "string",
+              "paramType": "path"
             },
             {
-            "in": "path",
+    
             "name": "department",
             "required": true,
-            "description": "Company request location"
+            "description": "Company request location",
+            "type": "string",
+            "paramType": "path"
             },
             {
-            "in": "path",
+      
             "name": "top_searchs",
             "required": true,
-            "description": "Company request limit of searches (1 to 30)"
+            "description": "Company request limit of searches (1 to 30)",
+            "type": "integer",
+            "paramType": "path"
             }
             
           ],
@@ -55,7 +66,7 @@
               "description": "Failed. Misunderstood Request."
             },
             "404": {
-              "description": "Failed. Book request not found."
+              "description": "Failed. Company request not found."
             }
           }
         }

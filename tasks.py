@@ -1,6 +1,8 @@
+from unittest import result
 from RPA.Browser.Selenium import Selenium
 import business_table
 import json
+from datetime import datetime
 
 browser_lib = Selenium()
 
@@ -20,8 +22,7 @@ def look_for_companies(top_results, company_search):
     companies_list = []
     data = {"companies": companies_list}
     if companies_founded == "Empresas y Empresarios (0)":
-        companies_list.append("Resultados no encontrados")
-        return json.dumps(data)
+        return {'Result': 'Resultados no encontrados'}
     best_score = 100
     actual_row = 0
     html_table = browser_lib.get_element_attribute("css:table#nacional", "outerHTML")
@@ -53,7 +54,7 @@ def look_best_fit_company(top_searchs, company_name):
     best_dict_fit = {}
     for dicti in data['companies']:
         for key, value in dicti.items():
-            if key == 'score_similitud':
+            if key == 'Score_similitud':
                 if value > best_score_fit:
                     best_score_fit = value
                     best_dict_fit = dicti
@@ -68,49 +69,71 @@ def store_screenshot(filename):
 
 
 def store_result(score_similitud):
-    ICI = browser_lib.get_text('xpath://*[@id="imprimir"]/table/tbody/tr[2]/td[2]/a') if browser_lib.is_element_visible('xpath://*[@id="imprimir"]/table/tbody/tr[2]/td[2]/a') else None
-    NIT = browser_lib.get_text('xpath://*[@id="imprimir"]/table/tbody/tr[3]/td[2]/a') if browser_lib.is_element_visible('xpath://*[@id="imprimir"]/table/tbody/tr[3]/td[2]/a') else None
-    razon_social = browser_lib.get_text('xpath://*[@id="imprimir"]/table/tbody/tr[4]/td[2]') if browser_lib.is_element_visible('xpath://*[@id="imprimir"]/table/tbody/tr[4]/td[2]') else None
-    forma_juridica = browser_lib.get_text('xpath://*[@id="imprimir"]/table/tbody/tr[5]/td[2]') if browser_lib.is_element_visible('xpath://*[@id="imprimir"]/table/tbody/tr[5]/td[2]') else None
-    departamento = browser_lib.get_text('xpath://*[@id="imprimir"]/table/tbody/tr[6]/td[2]') if browser_lib.is_element_visible('xpath://*[@id="imprimir"]/table/tbody/tr[5]/td[2]') else None
-    direccion_actual = browser_lib.get_text('xpath://*[@id="imprimir"]/table/tbody/tr[7]/td[2]/a') if browser_lib.is_element_visible('xpath://*[@id="imprimir"]/table/tbody/tr[7]/td[2]/a') else None
-    telefono = browser_lib.get_text('xpath://*[@id="imprimir"]/table/tbody/tr[8]/td[2]/a') if browser_lib.is_element_visible('xpath://*[@id="imprimir"]/table/tbody/tr[8]/td[2]/a') else None
-    email = browser_lib.get_text('xpath://*[@id="imprimir"]/table/tbody/tr[9]/td[2]/a') if browser_lib.is_element_visible('xpath://*[@id="imprimir"]/table/tbody/tr[9]/td[2]/a') else None
-    CIIU = browser_lib.get_text('xpath://*[@id="imprimir"]/table/tbody/tr[10]/td[2]') if browser_lib.is_element_visible('xpath://*[@id="imprimir"]/table/tbody/tr[10]/td[2]') else None
-    fecha_constitucion = browser_lib.get_text('xpath://*[@id="imprimir"]/table/tbody/tr[11]/td[2]') if browser_lib.is_element_visible('xpath://*[@id="imprimir"]/table/tbody/tr[11]/td[2]') else None
-    matricula_mercantil = browser_lib.get_text('xpath://*[@id="imprimir"]/table/tbody/tr[12]/td[2]/a') if browser_lib.is_element_visible('xpath://*[@id="imprimir"]/table/tbody/tr[12]/td[2]/a') else None
-    ultimo_balance_einforma = browser_lib.get_text('xpath://*[@id="imprimir"]/table/tbody/tr[14]/td[2]') if browser_lib.is_element_visible('xpath://*[@id="imprimir"]/table/tbody/tr[14]/td[2]') else None
-    fecha_ultimo_dato = browser_lib.get_text('xpath://*[@id="imprimir"]/table/tbody/tr[14]/td[2]') if browser_lib.is_element_visible('xpath://*[@id="imprimir"]/table/tbody/tr[14]/td[2]') else None
-    fecha_actualizacion_camara_comercio = browser_lib.get_text('xpath://*[@id="imprimir"]/table/tbody/tr[16]/td[2]') if browser_lib.is_element_visible('xpath://*[@id="imprimir"]/table/tbody/tr[16]/td[2]') else None
+    html_table_results = browser_lib.get_element_attribute('xpath://*[@id="imprimir"]/table', "outerHTML")
+    table_results = business_table.read_table_from_html_results(html_table_results)
+
+    my_dict = {}
+    for row in table_results:
+        label = row[0].replace(':',"")
+        value = row[1]
+        my_dict[label] = value
+
+    ICI = my_dict.get('ICI')
+    NIT = my_dict.get('Nit')
+    razon_social = my_dict.get('Razón Social')
+    forma_juridica = my_dict.get('Forma Jurídica')
+    departamento = my_dict.get('Departamento')
+    direccion_actual = my_dict.get('Dirección Actual')
+    telefono = my_dict.get('Teléfono')
+    email = my_dict.get('Email')
+    CIIU = my_dict.get('Actividad CIIU')
+    fecha_constitucion = my_dict.get('Fecha Constitución')
+    matricula_mercantil = my_dict.get('Matrícula Mercantil')
+    ultimo_balance_einforma = my_dict.get('Último Balance disponible en eInforma')
+    fecha_ultimo_dato = my_dict.get('Fecha Último Dato')
+    fecha_actualizacion_camara_comercio = my_dict.get('Fecha Actualización Cámara Comercio')
+
+    def validate_date(date_text):
+        try:
+            date_format = datetime.strptime(date_text, '%d/%m/%Y')
+            return date_format
+        except ValueError:
+            return None
+ 
 
     result_dict = {
         "ICI": ICI,
         "NIT": NIT,
-        "razon_social": razon_social,
-        "forma_juridica": forma_juridica,
-        "departamento": departamento,
-        "direccion_actual": direccion_actual,
-        "telefono": telefono,
-        "email": email,
+        "Razon_social": razon_social,
+        "Forma_juridica": forma_juridica,
+        "Departamento": departamento,
+        "Direccion_actual": direccion_actual,
+        "Telefono": telefono,
+        "Email": email,
         "CIIU": CIIU,
-        "fecha_constitucion": fecha_constitucion,
-        "matricula_mercantil": matricula_mercantil,
-        "ultimo_balance_einforma": ultimo_balance_einforma,
-        "fecha_ultimo_dato": fecha_ultimo_dato,
-        "ultimo_balance_einforma": fecha_actualizacion_camara_comercio,
-        "score_similitud": score_similitud,
-        "screenshot": f'localhost:5000/images/{razon_social.replace(" ", "_")}.png' 
+        "Fecha_constitucion": None if fecha_constitucion == None else validate_date(fecha_constitucion) ,
+        "Matricula_mercantil": matricula_mercantil,
+        "Ultimo_balance_einforma": ultimo_balance_einforma,
+        "Fecha_ultimo_dato": fecha_ultimo_dato,
+        "Ultimo_balance_einforma": fecha_actualizacion_camara_comercio,
+        "Score_similitud": score_similitud,
+        "Screenshot": f'localhost:5000/images/{razon_social.replace(" ", "_")}.png' 
     }
+
     return result_dict
 
 # Define a main() function that calls the other functions in order:
 def main():
     try:
-        company_name = "baires".capitalize()
+        company_name = "Olimpia"
         location = "BOGOTÁ"
         top_searchs = 3
         open_the_website("https://www.einforma.co/buscador-empresas-empresarios")
-        search_for(company_name, location)
+        try:
+            search_for(company_name, location)
+        except AssertionError:
+            print('No encontrado')
+            return {'Result':"Resultados no encontrados"}
         look_best_fit_company(top_searchs, company_name)
         
     finally:
